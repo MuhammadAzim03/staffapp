@@ -23,11 +23,11 @@ class StaffListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Staff List'),
-        centerTitle: true,
-        backgroundColor: Colors.deepPurple,
       ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection('staff').snapshots(),
@@ -35,22 +35,50 @@ class StaffListPage extends StatelessWidget {
           if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
           if (snapshot.data!.docs.isEmpty) {
             return Center(
-              child: Text('No staff added yet.', style: TextStyle(fontSize: 18, color: Colors.grey)),
+              child: Text(
+                'No staff added yet.',
+                style: TextStyle(fontSize: 18, color: Colors.grey),
+              ),
             );
           }
           return ListView(
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.all(16),
             children: snapshot.data!.docs.map((document) {
-              return Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              final name = document['name']?.toString() ?? '';
+              final id = document['id']?.toString() ?? '';
+              final age = document['age']?.toString() ?? '';
+
+              return Container(
+                margin: EdgeInsets.only(bottom: 12),
+                decoration: BoxDecoration(
+                  color: Colors.deepPurple.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: theme.primaryColor.withOpacity(0.4)),
+                ),
                 child: ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   leading: CircleAvatar(
-                    backgroundColor: Colors.deepPurple,
-                    child: Text(document['name'][0].toUpperCase(), style: TextStyle(color: Colors.white)),
+                    radius: 24,
+                    backgroundColor: theme.primaryColor,
+                    child: Text(
+                      (name.isNotEmpty)
+                          ? name[0].toUpperCase()
+                          : '?',
+                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                  title: Text(document['name'], style: TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: Text('ID: ${document['id']} | Age: ${document['age']}'),
+                  title: Text(
+                    name,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: theme.primaryColor,
+                    ),
+                  ),
+                  subtitle: Text(
+                    'ID: $id | Age: $age',
+                    style: TextStyle(fontSize: 14),
+                  ),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -60,9 +88,9 @@ class StaffListPage extends StatelessWidget {
                           editStaff(
                             context,
                             document.id,
-                            document['name'],
-                            document['id'],
-                            document['age'],
+                            name,
+                            id,
+                            age,
                           );
                         },
                       ),
@@ -89,7 +117,6 @@ class StaffListPage extends StatelessWidget {
         },
         label: Text('Add Staff'),
         icon: Icon(Icons.add),
-        backgroundColor: Colors.deepPurple,
       ),
     );
   }

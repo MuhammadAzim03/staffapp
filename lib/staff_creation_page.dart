@@ -7,7 +7,12 @@ class StaffCreationPage extends StatefulWidget {
   final String? existingId;
   final String? existingAge;
 
-  StaffCreationPage({this.docId, this.existingName, this.existingId, this.existingAge});
+  StaffCreationPage({
+    this.docId,
+    this.existingName,
+    this.existingId,
+    this.existingAge,
+  });
 
   @override
   _StaffCreationPageState createState() => _StaffCreationPageState();
@@ -29,22 +34,29 @@ class _StaffCreationPageState extends State<StaffCreationPage> {
   void addOrUpdateStaff() {
     if (widget.docId == null) {
       // Add new staff
-      FirebaseFirestore.instance.collection('staff').add({
-        'name': nameController.text,
-        'id': idController.text,
-        'age': ageController.text,
-      }).then((value) {
-        Navigator.pop(context);
-      });
+      FirebaseFirestore.instance
+          .collection('staff')
+          .add({
+            'name': nameController.text,
+            'id': idController.text,
+            'age': ageController.text,
+          })
+          .then((value) {
+            Navigator.pop(context);
+          });
     } else {
       // Update existing staff
-      FirebaseFirestore.instance.collection('staff').doc(widget.docId).update({
-        'name': nameController.text,
-        'id': idController.text,
-        'age': ageController.text,
-      }).then((value) {
-        Navigator.pop(context);
-      });
+      FirebaseFirestore.instance
+          .collection('staff')
+          .doc(widget.docId)
+          .update({
+            'name': nameController.text,
+            'id': idController.text,
+            'age': ageController.text,
+          })
+          .then((value) {
+            Navigator.pop(context);
+          });
     }
   }
 
@@ -62,7 +74,9 @@ class _StaffCreationPageState extends State<StaffCreationPage> {
         child: Padding(
           padding: EdgeInsets.all(20),
           child: Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
             elevation: 8,
             child: Padding(
               padding: EdgeInsets.all(20),
@@ -70,7 +84,11 @@ class _StaffCreationPageState extends State<StaffCreationPage> {
                 children: [
                   Text(
                     isEdit ? 'Edit Staff Details' : 'Enter Staff Details',
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.deepPurple),
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.deepPurple,
+                    ),
                   ),
                   SizedBox(height: 20),
                   TextField(
@@ -102,14 +120,18 @@ class _StaffCreationPageState extends State<StaffCreationPage> {
                   ),
                   SizedBox(height: 25),
                   ElevatedButton.icon(
-                    onPressed: addOrUpdateStaff,
+                   onPressed: addOrUpdateStaff,
                     icon: Icon(isEdit ? Icons.update : Icons.save),
                     label: Text(isEdit ? 'Update' : 'Submit'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.deepPurple,
+                      foregroundColor:
+                          Colors.white, // ✅ Ensure text/icon are visible
                       minimumSize: Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ), 
                   ),
                 ],
               ),
